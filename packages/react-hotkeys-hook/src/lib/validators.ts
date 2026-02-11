@@ -89,7 +89,22 @@ export const isHotkeyMatchingKeyboardEvent = (e: KeyboardEvent, hotkey: Hotkey, 
 
   const mappedCode = mapCode(code)
 
-  if (useKey && keys?.length === 1 && keys.includes(producedKey.toLowerCase())) {
+  if (useKey && keys?.length === 1) {
+    if (!keys.includes(producedKey.toLowerCase())) {
+      return false
+    }
+
+    if (!ignoreModifiers) {
+      if (alt && !altKey) return false
+      if (shift && !shiftKey) return false
+      if (mod) {
+        if (!metaKey && !ctrlKey) return false
+      } else {
+        if (meta && !metaKey) return false
+        if (ctrl && !ctrlKey) return false
+      }
+    }
+
     return true
   }
 

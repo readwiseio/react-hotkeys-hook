@@ -1733,3 +1733,43 @@ test('Should trigger only produced key hotkeys', async () => {
   expect(callbackZ).toHaveBeenCalledTimes(1)
   expect(callbackY).toHaveBeenCalledTimes(2)
 })
+
+test('Should not fire useKey handler when produced key does not match (Dvorak layout simulation)', () => {
+  const callback = vi.fn()
+
+  renderHook(() => useHotkeys('h', callback, { useKey: true }))
+
+  // Simulate Dvorak layout: physical KeyH produces 'd' instead of 'h'
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'd', code: 'KeyH', bubbles: true }))
+
+  expect(callback).toHaveBeenCalledTimes(0)
+})
+
+test('Should fire useKey handler for shifted characters on non-US layouts', () => {
+  const callback = vi.fn()
+
+  renderHook(() => useHotkeys('?', callback, { useKey: true }))
+
+  // Simulate German layout: Shift+ß produces '?'. shiftKey is true but shift is not in the hotkey spec.
+  document.dispatchEvent(
+    new KeyboardEvent('keydown', { key: '?', code: 'Minus', shiftKey: true, bubbles: true }),
+  )
+
+  expect(callback).toHaveBeenCalledTimes(1)
+})
+
+test('Should enforce explicit modifiers with useKey', () => {
+  const callback = vi.fn()
+
+  renderHook(() => useHotkeys('ctrl+z', callback, { useKey: true }))
+
+  // z without ctrl should not fire
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', code: 'KeyZ', bubbles: true }))
+  expect(callback).toHaveBeenCalledTimes(0)
+
+  // z with ctrl should fire
+  document.dispatchEvent(
+    new KeyboardEvent('keydown', { key: 'z', code: 'KeyZ', ctrlKey: true, bubbles: true }),
+  )
+  expect(callback).toHaveBeenCalledTimes(1)
+})
