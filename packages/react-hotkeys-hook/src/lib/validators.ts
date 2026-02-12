@@ -103,6 +103,13 @@ export const isHotkeyMatchingKeyboardEvent = (e: KeyboardEvent, hotkey: Hotkey, 
         if (meta && !metaKey) return false
         if (ctrl && !ctrlKey) return false
       }
+
+      // Reject when shift is not expected but pressed and only capitalized a letter
+      // (e.g. hotkey 'l' should not match Shift+L). We check producedKey !== lowercase
+      // to avoid rejecting symbols that inherently require shift (like '?' via Shift+/).
+      if (!shift && shiftKey && producedKey !== producedKey.toLowerCase()) {
+        return false
+      }
     }
 
     return true

@@ -1773,3 +1773,25 @@ test('Should enforce explicit modifiers with useKey', () => {
   )
   expect(callback).toHaveBeenCalledTimes(1)
 })
+
+test('Should not fire bare letter shortcut when shift is held with useKey', () => {
+  const callbackL = vi.fn()
+  const callbackShiftL = vi.fn()
+
+  renderHook(() => useHotkeys('l', callbackL, { useKey: true }))
+  renderHook(() => useHotkeys('shift+l', callbackShiftL, { useKey: true }))
+
+  // Shift+L should fire shift+l but NOT bare l
+  document.dispatchEvent(
+    new KeyboardEvent('keydown', { key: 'L', code: 'KeyL', shiftKey: true, bubbles: true }),
+  )
+  expect(callbackL).toHaveBeenCalledTimes(0)
+  expect(callbackShiftL).toHaveBeenCalledTimes(1)
+
+  // Plain l should fire bare l but NOT shift+l
+  document.dispatchEvent(
+    new KeyboardEvent('keydown', { key: 'l', code: 'KeyL', bubbles: true }),
+  )
+  expect(callbackL).toHaveBeenCalledTimes(1)
+  expect(callbackShiftL).toHaveBeenCalledTimes(1)
+})

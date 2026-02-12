@@ -1,4 +1,4 @@
-import { createContext as T, useContext as M, useState as A, useCallback as k, useRef as S, useLayoutEffect as z, useEffect as J } from "react";
+import { createContext as T, useContext as M, useState as C, useCallback as k, useRef as S, useLayoutEffect as z, useEffect as J } from "react";
 import { jsx as b } from "react/jsx-runtime";
 const j = ["shift", "alt", "meta", "mod", "ctrl", "control"], Q = {
   esc: "escape",
@@ -123,6 +123,7 @@ const re = (e, n, r = !1) => {
       if (f) {
         if (!l && !a) return !1;
       } else if (u && !l || y && !a) return !1;
+      if (!o && h && t !== t.toLowerCase()) return !1;
     }
     return !0;
   }
@@ -157,7 +158,7 @@ const W = T({
   disableScope: () => {
   }
 }), se = () => M(W), fe = ({ initiallyActiveScopes: e = ["*"], children: n }) => {
-  const [r, i] = A(e), [u, f] = A([]), o = k((t) => {
+  const [r, i] = C(e), [u, f] = C([]), o = k((t) => {
     i((a) => a.includes("*") ? [t] : Array.from(/* @__PURE__ */ new Set([...a, t])));
   }, []), y = k((t) => {
     i((a) => a.filter((l) => l !== t));
@@ -219,12 +220,12 @@ function de(e, n, r, i) {
             w = setTimeout(() => {
               h = [];
             }, t?.sequenceTimeoutMs ?? 1e3);
-            const C = g.useKey ? s.key : K(s.code);
-            if (D(C.toLowerCase()))
+            const A = g.useKey ? s.key : K(s.code);
+            if (D(A.toLowerCase()))
               return;
-            h.push(C);
+            h.push(A);
             const G = g.keys?.[h.length - 1];
-            if (C !== G) {
+            if (A !== G) {
               h = [], w && clearTimeout(w);
               return;
             }
@@ -273,7 +274,7 @@ function de(e, n, r, i) {
   }, [y, t, a]), u;
 }
 function le(e = !1) {
-  const [n, r] = A(/* @__PURE__ */ new Set()), [i, u] = A(!1), f = k(
+  const [n, r] = C(/* @__PURE__ */ new Set()), [i, u] = C(!1), f = k(
     (m) => {
       m.code !== void 0 && (m.preventDefault(), m.stopPropagation(), r((d) => {
         const t = new Set(d);
