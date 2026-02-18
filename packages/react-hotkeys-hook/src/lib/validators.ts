@@ -95,13 +95,13 @@ export const isHotkeyMatchingKeyboardEvent = (e: KeyboardEvent, hotkey: Hotkey, 
     }
 
     if (!ignoreModifiers) {
-      if (alt && !altKey) return false
+      if (alt !== altKey) return false
       if (shift && !shiftKey) return false
       if (mod) {
         if (!metaKey && !ctrlKey) return false
       } else {
-        if (meta && !metaKey) return false
-        if (ctrl && !ctrlKey) return false
+        if (meta !== metaKey) return false
+        if (ctrl !== ctrlKey) return false
       }
 
       // Reject when shift is not expected but pressed and only capitalized a letter

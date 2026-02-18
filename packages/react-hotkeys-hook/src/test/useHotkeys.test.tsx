@@ -1795,3 +1795,33 @@ test('Should not fire bare letter shortcut when shift is held with useKey', () =
   expect(callbackL).toHaveBeenCalledTimes(1)
   expect(callbackShiftL).toHaveBeenCalledTimes(1)
 })
+
+test('Should not fire useKey handler when extra meta modifier is pressed', () => {
+  const callbackS = vi.fn()
+  const callbackShiftMetaS = vi.fn()
+
+  renderHook(() => useHotkeys('s', callbackS, { useKey: true }))
+  renderHook(() => useHotkeys('shift+meta+s', callbackShiftMetaS, { useKey: true }))
+
+  // Cmd+Shift+S on macOS produces lowercase 's' (Cmd suppresses shift's case effect)
+  document.dispatchEvent(
+    new KeyboardEvent('keydown', { key: 's', code: 'KeyS', shiftKey: true, metaKey: true, bubbles: true }),
+  )
+  expect(callbackS).toHaveBeenCalledTimes(0)
+  expect(callbackShiftMetaS).toHaveBeenCalledTimes(1)
+})
+
+test('Should not fire useKey handler when extra ctrl modifier is pressed', () => {
+  const callbackShiftF = vi.fn()
+  const callbackCtrlShiftF = vi.fn()
+
+  renderHook(() => useHotkeys('shift+f', callbackShiftF, { useKey: true }))
+  renderHook(() => useHotkeys('ctrl+shift+f', callbackCtrlShiftF, { useKey: true }))
+
+  // Ctrl+Shift+F should only fire ctrl+shift+f, not shift+f
+  document.dispatchEvent(
+    new KeyboardEvent('keydown', { key: 'f', code: 'KeyF', shiftKey: true, ctrlKey: true, bubbles: true }),
+  )
+  expect(callbackShiftF).toHaveBeenCalledTimes(0)
+  expect(callbackCtrlShiftF).toHaveBeenCalledTimes(1)
+})

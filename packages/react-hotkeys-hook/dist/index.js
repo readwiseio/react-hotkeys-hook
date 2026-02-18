@@ -119,11 +119,12 @@ const re = (e, n, r = !1) => {
     if (!c.includes(t.toLowerCase()))
       return !1;
     if (!r) {
-      if (i && !w || o && !h) return !1;
+      if (i !== w || o && !h) return !1;
       if (f) {
         if (!l && !a) return !1;
-      } else if (u && !l || y && !a) return !1;
-      if (!o && h && t !== t.toLowerCase()) return !1;
+      } else if (u !== l || y !== a) return !1;
+      if (!o && h && t !== t.toLowerCase())
+        return !1;
     }
     return !0;
   }
