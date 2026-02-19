@@ -1,6 +1,6 @@
-import { createContext as T, useContext as M, useState as C, useCallback as k, useRef as S, useLayoutEffect as z, useEffect as J } from "react";
-import { jsx as b } from "react/jsx-runtime";
-const j = ["shift", "alt", "meta", "mod", "ctrl", "control"], Q = {
+import { createContext as M, useContext as j, useState as b, useCallback as g, useRef as A, useLayoutEffect as J, useEffect as Q } from "react";
+import { jsx as q } from "react/jsx-runtime";
+const D = ["shift", "alt", "meta", "mod", "ctrl", "control"], U = {
   esc: "escape",
   return: "enter",
   left: "arrowleft",
@@ -19,38 +19,38 @@ const j = ["shift", "alt", "meta", "mod", "ctrl", "control"], Q = {
   ControlRight: "ctrl"
 };
 function K(e) {
-  return (Q[e.trim()] || e.trim()).toLowerCase().replace(/key|digit|numpad/, "");
+  return (U[e.trim()] || e.trim()).toLowerCase().replace(/key|digit|numpad/, "");
 }
-function D(e) {
-  return j.includes(e);
+function _(e) {
+  return D.includes(e);
 }
-function H(e, n = ",") {
-  return e.toLowerCase().split(n);
+function P(e, o = ",") {
+  return e.toLowerCase().split(o);
 }
-function P(e, n = "+", r = ">", i = !1, u, f) {
-  let o = [], y = !1;
-  e = e.trim(), e.includes(r) ? (y = !0, o = e.toLocaleLowerCase().split(r).map((d) => K(d))) : o = e.toLocaleLowerCase().split(n).map((d) => K(d));
-  const c = {
-    alt: o.includes("alt"),
-    ctrl: o.includes("ctrl") || o.includes("control"),
-    shift: o.includes("shift"),
-    meta: o.includes("meta"),
-    mod: o.includes("mod"),
+function R(e, o = "+", r = ">", i = !1, c, f) {
+  let n = [], y = !1;
+  e = e.trim(), e.includes(r) ? (y = !0, n = e.toLocaleLowerCase().split(r).map((d) => K(d))) : n = e.toLocaleLowerCase().split(o).map((d) => K(d));
+  const u = {
+    alt: n.includes("alt"),
+    ctrl: n.includes("ctrl") || n.includes("control"),
+    shift: n.includes("shift"),
+    meta: n.includes("meta"),
+    mod: n.includes("mod"),
     useKey: i
-  }, m = o.filter((d) => !j.includes(d));
+  }, m = n.filter((d) => !D.includes(d));
   return {
-    ...c,
+    ...u,
     keys: m,
-    description: u,
+    description: c,
     isSequence: y,
     hotkey: e,
     metadata: f
   };
 }
 typeof document < "u" && (document.addEventListener("keydown", (e) => {
-  e.code !== void 0 && _([K(e.code)]);
-}), document.addEventListener("keyup", (e) => {
   e.code !== void 0 && I([K(e.code)]);
+}), document.addEventListener("keyup", (e) => {
+  e.code !== void 0 && F([K(e.code)]);
 })), typeof window < "u" && (window.addEventListener("blur", () => {
   L.clear();
 }), window.addEventListener("contextmenu", () => {
@@ -59,33 +59,58 @@ typeof document < "u" && (document.addEventListener("keydown", (e) => {
   }, 0);
 }));
 const L = /* @__PURE__ */ new Set();
-function R(e) {
+function x(e) {
   return Array.isArray(e);
 }
-function U(e, n = ",") {
-  return (R(e) ? e : e.split(n)).every((i) => L.has(i.trim().toLowerCase()));
+function V(e, o = ",") {
+  return (x(e) ? e : e.split(o)).every((i) => L.has(i.trim().toLowerCase()));
 }
-function _(e) {
-  const n = Array.isArray(e) ? e : [e];
+function I(e) {
+  const o = Array.isArray(e) ? e : [e];
   L.has("meta") && L.forEach((r) => {
-    D(r) || L.delete(r.toLowerCase());
-  }), n.forEach((r) => {
+    _(r) || L.delete(r.toLowerCase());
+  }), o.forEach((r) => {
     L.add(r.toLowerCase());
   });
 }
-function I(e) {
-  const n = Array.isArray(e) ? e : [e];
-  e === "meta" ? L.clear() : n.forEach((r) => {
+function F(e) {
+  const o = Array.isArray(e) ? e : [e];
+  e === "meta" ? L.clear() : o.forEach((r) => {
     L.delete(r.toLowerCase());
   });
 }
-function V(e, n, r) {
-  (typeof r == "function" && r(e, n) || r === !0) && e.preventDefault();
+const X = {
+  comma: ",",
+  period: ".",
+  slash: "/",
+  backslash: "\\",
+  semicolon: ";",
+  quote: "'",
+  backquote: "`",
+  bracketleft: "[",
+  bracketright: "]",
+  minus: "-",
+  equal: "="
+}, O = {
+  ",": "<",
+  ".": ">",
+  "/": "?",
+  ";": ":",
+  "'": '"',
+  "\\": "|",
+  "`": "~",
+  "[": "{",
+  "]": "}",
+  "-": "_",
+  "=": "+"
+};
+function Y(e, o, r) {
+  (typeof r == "function" && r(e, o) || r === !0) && e.preventDefault();
 }
-function X(e, n, r) {
-  return typeof r == "function" ? r(e, n) : r === !0 || r === void 0;
+function Z(e, o, r) {
+  return typeof r == "function" ? r(e, o) : r === !0 || r === void 0;
 }
-const Y = [
+const ee = [
   "input",
   "textarea",
   "select",
@@ -99,56 +124,57 @@ const Y = [
   "radio",
   "textbox"
 ];
-function Z(e) {
-  return F(e, Y);
+function te(e) {
+  return $(e, ee);
 }
-function F(e, n = !1) {
+function $(e, o = !1) {
   const { target: r, composed: i } = e;
-  let u, f;
-  return ee(r) && i ? (u = e.composedPath()[0] && e.composedPath()[0].tagName, f = e.composedPath()[0] && e.composedPath()[0].role) : (u = r && r.tagName, f = r && r.role), R(n) ? !!(u && n && n.some((o) => o.toLowerCase() === u.toLowerCase() || o === f)) : !!(u && n && n);
+  let c, f;
+  return re(r) && i ? (c = e.composedPath()[0] && e.composedPath()[0].tagName, f = e.composedPath()[0] && e.composedPath()[0].role) : (c = r && r.tagName, f = r && r.role), x(o) ? !!(c && o && o.some((n) => n.toLowerCase() === c.toLowerCase() || n === f)) : !!(c && o && o);
 }
-function ee(e) {
+function re(e) {
   return !!e.tagName && !e.tagName.startsWith("-") && e.tagName.includes("-");
 }
-function te(e, n) {
-  return e.length === 0 && n ? !1 : n ? e.some((r) => n.includes(r)) || e.includes("*") : !0;
+function oe(e, o) {
+  return e.length === 0 && o ? !1 : o ? e.some((r) => o.includes(r)) || e.includes("*") : !0;
 }
-const re = (e, n, r = !1) => {
-  const { alt: i, meta: u, mod: f, shift: o, ctrl: y, keys: c, useKey: m } = n, { code: d, key: t, ctrlKey: a, metaKey: l, shiftKey: h, altKey: w } = e, p = K(d);
-  if (m && c?.length === 1) {
-    if (!c.includes(t.toLowerCase()))
+const ne = (e, o, r = !1) => {
+  const { alt: i, meta: c, mod: f, shift: n, ctrl: y, keys: u, useKey: m } = o, { code: d, key: t, ctrlKey: a, metaKey: l, shiftKey: h, altKey: w } = e, p = K(d);
+  if (m && u?.length === 1) {
+    const S = X[u[0]] ?? u[0], C = [S];
+    if (n && O[S] && C.push(O[S]), !C.includes(t.toLowerCase()))
       return !1;
     if (!r) {
-      if (i !== w || o && !h) return !1;
+      if (i !== w || n && !h) return !1;
       if (f) {
         if (!l && !a) return !1;
-      } else if (u !== l || y !== a) return !1;
-      if (!o && h && t !== t.toLowerCase())
+      } else if (c !== l || y !== a) return !1;
+      if (!n && h && t !== t.toLowerCase())
         return !1;
     }
     return !0;
   }
-  if (!c?.includes(p) && !["ctrl", "control", "unknown", "meta", "alt", "shift", "os"].includes(p))
+  if (!u?.includes(p) && !["ctrl", "control", "unknown", "meta", "alt", "shift", "os"].includes(p))
     return !1;
   if (!r) {
-    if (i !== w && p !== "alt" || o !== h && p !== "shift")
+    if (i !== w && p !== "alt" || n !== h && p !== "shift")
       return !1;
     if (f) {
       if (!l && !a)
         return !1;
-    } else if (u !== l && p !== "meta" && p !== "os" || y !== a && p !== "ctrl" && p !== "control")
+    } else if (c !== l && p !== "meta" && p !== "os" || y !== a && p !== "ctrl" && p !== "control")
       return !1;
   }
-  return c && c.length === 1 && c.includes(p) ? !0 : c && c.length > 0 ? c.includes(p) ? U(c) : !1 : !c || c.length === 0;
-}, $ = T(void 0), ne = () => M($);
-function oe({ addHotkey: e, removeHotkey: n, children: r }) {
-  return /* @__PURE__ */ b($.Provider, { value: { addHotkey: e, removeHotkey: n }, children: r });
+  return u && u.length === 1 && u.includes(p) ? !0 : u && u.length > 0 ? u.includes(p) ? V(u) : !1 : !u || u.length === 0;
+}, W = M(void 0), se = () => j(W);
+function ie({ addHotkey: e, removeHotkey: o, children: r }) {
+  return /* @__PURE__ */ q(W.Provider, { value: { addHotkey: e, removeHotkey: o }, children: r });
 }
-function x(e, n) {
-  return e && n && typeof e == "object" && typeof n == "object" ? Object.keys(e).length === Object.keys(n).length && // @ts-expect-error TS7053
-  Object.keys(e).reduce((r, i) => r && x(e[i], n[i]), !0) : e === n;
+function T(e, o) {
+  return e && o && typeof e == "object" && typeof o == "object" ? Object.keys(e).length === Object.keys(o).length && // @ts-expect-error TS7053
+  Object.keys(e).reduce((r, i) => r && T(e[i], o[i]), !0) : e === o;
 }
-const W = T({
+const G = M({
   hotkeys: [],
   activeScopes: [],
   // This array has to be empty instead of containing '*' as default, to check if the provider is set or not
@@ -158,58 +184,58 @@ const W = T({
   },
   disableScope: () => {
   }
-}), se = () => M(W), fe = ({ initiallyActiveScopes: e = ["*"], children: n }) => {
-  const [r, i] = C(e), [u, f] = C([]), o = k((t) => {
+}), ce = () => j(G), le = ({ initiallyActiveScopes: e = ["*"], children: o }) => {
+  const [r, i] = b(e), [c, f] = b([]), n = g((t) => {
     i((a) => a.includes("*") ? [t] : Array.from(/* @__PURE__ */ new Set([...a, t])));
-  }, []), y = k((t) => {
+  }, []), y = g((t) => {
     i((a) => a.filter((l) => l !== t));
-  }, []), c = k((t) => {
+  }, []), u = g((t) => {
     i((a) => a.includes(t) ? a.filter((l) => l !== t) : a.includes("*") ? [t] : Array.from(/* @__PURE__ */ new Set([...a, t])));
-  }, []), m = k((t) => {
+  }, []), m = g((t) => {
     f((a) => [...a, t]);
-  }, []), d = k((t) => {
-    f((a) => a.filter((l) => !x(l, t)));
+  }, []), d = g((t) => {
+    f((a) => a.filter((l) => !T(l, t)));
   }, []);
-  return /* @__PURE__ */ b(
-    W.Provider,
+  return /* @__PURE__ */ q(
+    G.Provider,
     {
-      value: { activeScopes: r, hotkeys: u, enableScope: o, disableScope: y, toggleScope: c },
-      children: /* @__PURE__ */ b(oe, { addHotkey: m, removeHotkey: d, children: n })
+      value: { activeScopes: r, hotkeys: c, enableScope: n, disableScope: y, toggleScope: u },
+      children: /* @__PURE__ */ q(ie, { addHotkey: m, removeHotkey: d, children: o })
     }
   );
 };
-function ie(e) {
-  const n = S(void 0);
-  return x(n.current, e) || (n.current = e), n.current;
+function ue(e) {
+  const o = A(void 0);
+  return T(o.current, e) || (o.current = e), o.current;
 }
-const N = (e) => {
+const B = (e) => {
   e.stopPropagation(), e.preventDefault(), e.stopImmediatePropagation();
-}, ue = typeof window < "u" ? z : J;
-function de(e, n, r, i) {
-  const u = S(null), f = S(!1), o = Array.isArray(r) ? Array.isArray(i) ? void 0 : i : r, y = R(e) ? e.join(o?.delimiter) : e, c = Array.isArray(r) ? r : Array.isArray(i) ? i : void 0, m = k(n, c ?? []), d = S(m);
-  c ? d.current = m : d.current = n;
-  const t = ie(o), { activeScopes: a } = se(), l = ne();
-  return ue(() => {
-    if (t?.enabled === !1 || !te(a, t?.scopes))
+}, ae = typeof window < "u" ? J : Q;
+function ye(e, o, r, i) {
+  const c = A(null), f = A(!1), n = Array.isArray(r) ? Array.isArray(i) ? void 0 : i : r, y = x(e) ? e.join(n?.delimiter) : e, u = Array.isArray(r) ? r : Array.isArray(i) ? i : void 0, m = g(o, u ?? []), d = A(m);
+  u ? d.current = m : d.current = o;
+  const t = ue(n), { activeScopes: a } = ce(), l = se();
+  return ae(() => {
+    if (t?.enabled === !1 || !oe(a, t?.scopes))
       return;
     let h = [], w;
-    const p = (s, B = !1) => {
-      if (!(Z(s) && !F(s, t?.enableOnFormTags))) {
-        if (u.current !== null) {
-          const v = u.current.getRootNode();
-          if ((v instanceof Document || v instanceof ShadowRoot) && v.activeElement !== u.current && !u.current.contains(v.activeElement)) {
-            N(s);
+    const p = (s, N = !1) => {
+      if (!(te(s) && !$(s, t?.enableOnFormTags))) {
+        if (c.current !== null) {
+          const v = c.current.getRootNode();
+          if ((v instanceof Document || v instanceof ShadowRoot) && v.activeElement !== c.current && !c.current.contains(v.activeElement)) {
+            B(s);
             return;
           }
         }
-        s.target?.isContentEditable && !t?.enableOnContentEditable || H(y, t?.delimiter).forEach((v) => {
+        s.target?.isContentEditable && !t?.enableOnContentEditable || P(y, t?.delimiter).forEach((v) => {
           if (v.includes(t?.splitKey ?? "+") && v.includes(t?.sequenceSplitKey ?? ">")) {
             console.warn(
               `Hotkey ${v} contains both ${t?.splitKey ?? "+"} and ${t?.sequenceSplitKey ?? ">"} which is not supported.`
             );
             return;
           }
-          const g = P(
+          const k = R(
             v,
             t?.splitKey,
             t?.sequenceSplitKey,
@@ -217,39 +243,39 @@ function de(e, n, r, i) {
             t?.description,
             t?.metadata
           );
-          if (g.isSequence) {
+          if (k.isSequence) {
             w = setTimeout(() => {
               h = [];
             }, t?.sequenceTimeoutMs ?? 1e3);
-            const A = g.useKey ? s.key : K(s.code);
-            if (D(A.toLowerCase()))
+            const H = k.useKey ? s.key : K(s.code);
+            if (_(H.toLowerCase()))
               return;
-            h.push(A);
-            const G = g.keys?.[h.length - 1];
-            if (A !== G) {
+            h.push(H);
+            const z = k.keys?.[h.length - 1];
+            if (H !== z) {
               h = [], w && clearTimeout(w);
               return;
             }
-            h.length === g.keys?.length && (d.current(s, g), w && clearTimeout(w), h = []);
-          } else if (re(s, g, t?.ignoreModifiers) || g.keys?.includes("*")) {
-            if (t?.ignoreEventWhen?.(s) || B && f.current)
+            h.length === k.keys?.length && (d.current(s, k), w && clearTimeout(w), h = []);
+          } else if (ne(s, k, t?.ignoreModifiers) || k.keys?.includes("*")) {
+            if (t?.ignoreEventWhen?.(s) || N && f.current)
               return;
-            if (V(s, g, t?.preventDefault), !X(s, g, t?.enabled)) {
-              N(s);
+            if (Y(s, k, t?.preventDefault), !Z(s, k, t?.enabled)) {
+              B(s);
               return;
             }
-            d.current(s, g), B || (f.current = !0);
+            d.current(s, k), N || (f.current = !0);
           }
         });
       }
-    }, O = (s) => {
-      s.code !== void 0 && (_(K(s.code)), (t?.keydown === void 0 && t?.keyup !== !0 || t?.keydown) && p(s));
-    }, q = (s) => {
-      s.code !== void 0 && (I(K(s.code)), f.current = !1, t?.keyup && p(s, !0));
-    }, E = u.current || o?.document || document;
-    return E.addEventListener("keyup", q, o?.eventListenerOptions), E.addEventListener("keydown", O, o?.eventListenerOptions), l && H(y, t?.delimiter).forEach((s) => {
+    }, S = (s) => {
+      s.code !== void 0 && (I(K(s.code)), (t?.keydown === void 0 && t?.keyup !== !0 || t?.keydown) && p(s));
+    }, C = (s) => {
+      s.code !== void 0 && (F(K(s.code)), f.current = !1, t?.keyup && p(s, !0));
+    }, E = c.current || n?.document || document;
+    return E.addEventListener("keyup", C, n?.eventListenerOptions), E.addEventListener("keydown", S, n?.eventListenerOptions), l && P(y, t?.delimiter).forEach((s) => {
       l.addHotkey(
-        P(
+        R(
           s,
           t?.splitKey,
           t?.sequenceSplitKey,
@@ -259,9 +285,9 @@ function de(e, n, r, i) {
         )
       );
     }), () => {
-      E.removeEventListener("keyup", q, o?.eventListenerOptions), E.removeEventListener("keydown", O, o?.eventListenerOptions), l && H(y, t?.delimiter).forEach((s) => {
+      E.removeEventListener("keyup", C, n?.eventListenerOptions), E.removeEventListener("keydown", S, n?.eventListenerOptions), l && P(y, t?.delimiter).forEach((s) => {
         l.removeHotkey(
-          P(
+          R(
             s,
             t?.splitKey,
             t?.sequenceSplitKey,
@@ -272,10 +298,10 @@ function de(e, n, r, i) {
         );
       }), h = [], w && clearTimeout(w);
     };
-  }, [y, t, a]), u;
+  }, [y, t, a]), c;
 }
-function le(e = !1) {
-  const [n, r] = C(/* @__PURE__ */ new Set()), [i, u] = C(!1), f = k(
+function me(e = !1) {
+  const [o, r] = b(/* @__PURE__ */ new Set()), [i, c] = b(!1), f = g(
     (m) => {
       m.code !== void 0 && (m.preventDefault(), m.stopPropagation(), r((d) => {
         const t = new Set(d);
@@ -283,19 +309,19 @@ function le(e = !1) {
       }));
     },
     [e]
-  ), o = k(() => {
-    typeof document < "u" && (document.removeEventListener("keydown", f), u(!1));
-  }, [f]), y = k(() => {
-    r(/* @__PURE__ */ new Set()), typeof document < "u" && (o(), document.addEventListener("keydown", f), u(!0));
-  }, [f, o]), c = k(() => {
+  ), n = g(() => {
+    typeof document < "u" && (document.removeEventListener("keydown", f), c(!1));
+  }, [f]), y = g(() => {
+    r(/* @__PURE__ */ new Set()), typeof document < "u" && (n(), document.addEventListener("keydown", f), c(!0));
+  }, [f, n]), u = g(() => {
     r(/* @__PURE__ */ new Set());
   }, []);
-  return [n, { start: y, stop: o, resetKeys: c, isRecording: i }];
+  return [o, { start: y, stop: n, resetKeys: u, isRecording: i }];
 }
 export {
-  fe as HotkeysProvider,
-  U as isHotkeyPressed,
-  de as useHotkeys,
-  se as useHotkeysContext,
-  le as useRecordHotkeys
+  le as HotkeysProvider,
+  V as isHotkeyPressed,
+  ye as useHotkeys,
+  ce as useHotkeysContext,
+  me as useRecordHotkeys
 };

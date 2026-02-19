@@ -2,6 +2,41 @@ import type { FormTags, Hotkey, Scopes, Trigger } from './types'
 import { isHotkeyPressed, isReadonlyArray } from './isHotkeyPressed'
 import { mapCode } from './parseHotkeys'
 
+// Map named key identifiers to their character equivalents.
+// Used when useKey mode is enabled to compare event.key against named keys
+// that represent layout-dependent characters (e.g., 'comma' on Dvorak
+// is at a different physical position than on QWERTY).
+const keyNameToChar: Record<string, string> = {
+  comma: ',',
+  period: '.',
+  slash: '/',
+  backslash: '\\',
+  semicolon: ';',
+  quote: "'",
+  backquote: '`',
+  bracketleft: '[',
+  bracketright: ']',
+  minus: '-',
+  equal: '=',
+}
+
+// Map base characters to their shift-modified equivalents (US layout).
+// When a hotkey specifies shift+namedKey (e.g. shift+comma), event.key
+// reports the shifted character ('<' instead of ','), so we need to accept both.
+const charToShiftedChar: Record<string, string> = {
+  ',': '<',
+  '.': '>',
+  '/': '?',
+  ';': ':',
+  "'": '"',
+  '\\': '|',
+  '`': '~',
+  '[': '{',
+  ']': '}',
+  '-': '_',
+  '=': '+',
+}
+
 export function maybePreventDefault(e: KeyboardEvent, hotkey: Hotkey, preventDefault?: Trigger): void {
   if ((typeof preventDefault === 'function' && preventDefault(e, hotkey)) || preventDefault === true) {
     e.preventDefault()
@@ -90,7 +125,16 @@ export const isHotkeyMatchingKeyboardEvent = (e: KeyboardEvent, hotkey: Hotkey, 
   const mappedCode = mapCode(code)
 
   if (useKey && keys?.length === 1) {
-    if (!keys.includes(producedKey.toLowerCase())) {
+    const mappedKey = keyNameToChar[keys[0]] ?? keys[0]
+    const matchChars = [mappedKey]
+
+    // When shift is expected, also accept the shifted character
+    // (e.g., shift+comma should match '<' as event.key)
+    if (shift && charToShiftedChar[mappedKey]) {
+      matchChars.push(charToShiftedChar[mappedKey])
+    }
+
+    if (!matchChars.includes(producedKey.toLowerCase())) {
       return false
     }
 
