@@ -1825,3 +1825,55 @@ test('Should not fire useKey handler when extra ctrl modifier is pressed', () =>
   expect(callbackShiftF).toHaveBeenCalledTimes(0)
   expect(callbackCtrlShiftF).toHaveBeenCalledTimes(1)
 })
+
+test('Should match named key "comma" against produced character "," with useKey (Dvorak layout)', () => {
+  const callback = vi.fn()
+
+  renderHook(() => useHotkeys('comma', callback, { useKey: true }))
+
+  // Simulate Dvorak layout: physical KeyW produces ',' instead of 'w'
+  document.dispatchEvent(
+    new KeyboardEvent('keydown', { key: ',', code: 'KeyW', bubbles: true }),
+  )
+
+  expect(callback).toHaveBeenCalledTimes(1)
+})
+
+test('Should match named key "period" against produced character "." with useKey (Dvorak layout)', () => {
+  const callback = vi.fn()
+
+  renderHook(() => useHotkeys('period', callback, { useKey: true }))
+
+  // Simulate Dvorak layout: physical KeyE produces '.' instead of 'e'
+  document.dispatchEvent(
+    new KeyboardEvent('keydown', { key: '.', code: 'KeyE', bubbles: true }),
+  )
+
+  expect(callback).toHaveBeenCalledTimes(1)
+})
+
+test('Should match named key "comma" on QWERTY layout too with useKey', () => {
+  const callback = vi.fn()
+
+  renderHook(() => useHotkeys('comma', callback, { useKey: true }))
+
+  // QWERTY: physical Comma key produces ','
+  document.dispatchEvent(
+    new KeyboardEvent('keydown', { key: ',', code: 'Comma', bubbles: true }),
+  )
+
+  expect(callback).toHaveBeenCalledTimes(1)
+})
+
+test('Should not match named key "comma" when a different character is produced', () => {
+  const callback = vi.fn()
+
+  renderHook(() => useHotkeys('comma', callback, { useKey: true }))
+
+  // Some key that produces 'w' (not ',')
+  document.dispatchEvent(
+    new KeyboardEvent('keydown', { key: 'w', code: 'KeyW', bubbles: true }),
+  )
+
+  expect(callback).toHaveBeenCalledTimes(0)
+})
